@@ -42,21 +42,56 @@
               <th>Perfil</th>
               <th>Estado</th>
               <th>Ultimo login</th>
+              <th>Fecha</th>
               <th>Acciones</th>
             </tr>
           </thead>
 
           <tbody>
-            <tr>
-              <td>#</td>
-              <td>Nombre</td>
-              <td>Usuario</td>
-              <td>Foto</td>
-              <td>Perfil</td>
-              <td>Estado</td>
-              <td>Ultimo login</td>
-              <td>Acciones</td>
-            </tr>
+
+            <?php
+
+            $item = null;
+            $valor = null;
+
+            $usuarios = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
+
+            foreach ($usuarios as $key => $value) {
+
+              echo '
+              <tr>
+                <td>' . $value["id"] . '</td>
+                <td>' . $value["nombre"] . '</td>
+                <td>' . $value["usuario"] . '</td>';
+
+              if ($value["foto"] != "") {
+                echo '<td><img src="' . $value["foto"] . '" class="img-tumnbail" width="40px"></td>';
+              } else {
+                echo '<td><img src="vistas/img/usuarios/default/anonymous.png" class="img-tumnbail" width="40px"></td>';
+              }
+              echo '
+                <td>' . $value["perfil"] . '</td>
+                <td>' . $value["estado"] . '</td>
+                <td>' . $value["ultimo_login"] . '</td>
+                <td>' . $value["fecha"] . '</td>
+                <td>
+                  <div class="text-center">
+                    <button class="btn btn-warning" data-toggle="modal" data-target="#modalEditarUsuario">
+                      <i class="fa fa-pencil"></i>
+                    </button>
+                    <button class="btn btn-danger">
+                      <i class="fa fa-times"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              
+              ';
+            }
+
+            ?>
+
+
           </tbody>
         </table>
       </div>
@@ -119,6 +154,71 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Salir</button>
           <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        </div>
+        <?php
+        if ($_POST) {
+          ControladorUsuarios::ctrCrearUsuario();
+        }
+        ?>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal editar usuario -->
+
+<div id="modalEditarUsuario" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <form role="form" method="post" enctype="multipart/form-data">
+        <div class="modal-header" style="background-color: #3c8dbc; color:white">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Editar usuario</h4>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+              <input type="text" class="form-control" name="editarNombre">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-sunglasses"></i></span>
+              <input type="text" class="form-control" name="editarUsuario">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+              <input type="password" class="form-control" name="editarPassword" placeholder="Nueva contraseña">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="input-group">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-eye-open"></i></span>
+              <select class="form-control input-lg" name="EditarPerfil">
+                <option value="" id="editarPerfil"></option>
+                <option value="Administrador">Administrador</option>
+                <option value="Especial">Especial</option>
+                <option value="Vendedor">Vendedor</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+
+            <div class="panel">SUBIR FOTO</div>
+            <input type="file" class="nuevaFoto" name="editarFoto">
+            <p class="help-block text-center mt-2">Peso maximo de la foto 2MB</p>
+            <div class="text-center">
+              <img src="vistas/img/usuarios/default/anonymous.png" class="img-thumbnail previsualizarImagen" width="150px">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Salir</button>
+          <button type="submit" class="btn btn-primary">Modificar usuario</button>
         </div>
         <?php
         if ($_POST) {
