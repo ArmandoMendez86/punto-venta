@@ -11,3 +11,28 @@ $(".nuevaFoto").change(function () {
     $(".previsualizarImagen").attr("src", rutaImagen);
   });
 });
+
+$(".btnEditarUsuario").click(function () {
+  let idUsuario = $(this).attr("idUsuario");
+  let datos = new FormData();
+  datos.append("idUsuario", idUsuario);
+
+  $.ajax({
+    url: "ajax/usuarios.ajax.php",
+    method: "POST",
+    data: datos,
+    cache: false,
+    contentType: false,
+    processData: false,
+    dataType: "json",
+    success: function (respuesta) {
+      $("#editarNombre").val(respuesta["nombre"]);
+      $("#editarUsuario").val(respuesta["usuario"]);
+      $("#editarPerfil").val(respuesta["perfil"]);
+
+      if (respuesta["foto"] != "") {
+        $(".previsualizarImagen").attr("src", respuesta["foto"]);
+      }
+    },
+  });
+});

@@ -46,7 +46,7 @@
  					<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 
  						<?php
-							if ($_SESSION["nombre"] != "") {
+							if ($_SESSION["foto"] != "") {
 								echo '<img src="' . $_SESSION["foto"] . '" class="user-image">';
 							} else {
 

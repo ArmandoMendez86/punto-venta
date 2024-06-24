@@ -10,7 +10,7 @@
 
     <ol class="breadcrumb">
 
-      <li><a href="#"><i class="fa fa-dashboard"></i> Inicio</a></li>
+      <li><a href="inicio"><i class="fa fa-dashboard"></i> Inicio</a></li>
 
       <li class="active">Administrar usuarios</li>
 
@@ -76,7 +76,7 @@
                 <td>' . $value["fecha"] . '</td>
                 <td>
                   <div class="text-center">
-                    <button class="btn btn-warning" data-toggle="modal" data-target="#modalEditarUsuario">
+                    <button class="btn btn-warning btnEditarUsuario" idUsuario="'.$value["id"].'" data-toggle="modal" data-target="#modalEditarUsuario">
                       <i class="fa fa-pencil"></i>
                     </button>
                     <button class="btn btn-danger">
@@ -180,26 +180,25 @@
           <div class="form-group">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input type="text" class="form-control" name="editarNombre">
+              <input type="text" class="form-control" id="editarNombre">
             </div>
           </div>
           <div class="form-group">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-sunglasses"></i></span>
-              <input type="text" class="form-control" name="editarUsuario">
+              <input type="text" class="form-control" id="editarUsuario">
             </div>
           </div>
           <div class="form-group">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-              <input type="password" class="form-control" name="editarPassword" placeholder="Nueva contraseña">
+              <input type="text" class="form-control" name="editarPassword" placeholder="Nueva contraseña">
             </div>
           </div>
           <div class="form-group">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-eye-open"></i></span>
-              <select class="form-control input-lg" name="EditarPerfil">
-                <option value="" id="editarPerfil"></option>
+              <select class="form-control input-lg" name="editarPerfil" id="editarPerfil">
                 <option value="Administrador">Administrador</option>
                 <option value="Especial">Especial</option>
                 <option value="Vendedor">Vendedor</option>

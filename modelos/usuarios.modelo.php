@@ -14,10 +14,16 @@ class ModeloUsuarios
 
 		if ($item != null) {
 			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE $item = :$item");
-			$stmt->bindParam(":" . $item, $valor, PDO::PARAM_STR);
+		
+			if (is_int($valor)) {
+				$stmt->bindParam(":" . $item, $valor, PDO::PARAM_INT);
+			} else {
+				$stmt->bindParam(":" . $item, $valor, PDO::PARAM_STR);
+			}
+		
 			$stmt->execute();
 			return $stmt->fetch();
-		} else {
+		}else {
 			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla");
 			$stmt->execute();
 			return $stmt->fetchAll();
