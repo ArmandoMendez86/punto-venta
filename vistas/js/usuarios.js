@@ -1,4 +1,6 @@
-// Subiendo la foto del usuario
+/*=============================================
+	PEWVISUALIZAR FOTO
+	=============================================*/
 
 $(".nuevaFoto").change(function () {
   let imagen = this.files[0];
@@ -11,6 +13,10 @@ $(".nuevaFoto").change(function () {
     $(".previsualizarImagen").attr("src", rutaImagen);
   });
 });
+
+/*=============================================
+	EDITAR USUARIO
+	=============================================*/
 
 $(".btnEditarUsuario").click(function () {
   let idUsuario = $(this).attr("idUsuario");

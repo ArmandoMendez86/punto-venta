@@ -76,7 +76,7 @@
                 <td>' . $value["fecha"] . '</td>
                 <td>
                   <div class="text-center">
-                    <button class="btn btn-warning btnEditarUsuario" idUsuario="'.$value["id"].'" data-toggle="modal" data-target="#modalEditarUsuario">
+                    <button class="btn btn-warning btnEditarUsuario" idUsuario="' . $value["id"] . '" data-toggle="modal" data-target="#modalEditarUsuario">
                       <i class="fa fa-pencil"></i>
                     </button>
                     <button class="btn btn-danger">
@@ -180,13 +180,13 @@
           <div class="form-group">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-              <input type="text" class="form-control" id="editarNombre">
+              <input type="text" class="form-control" id="editarNombre" name="editarNombre">
             </div>
           </div>
           <div class="form-group">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-sunglasses"></i></span>
-              <input type="text" class="form-control" id="editarUsuario">
+              <input type="text" class="form-control" id="editarUsuario" name="editarUsuario" readonly>
             </div>
           </div>
           <div class="form-group">
@@ -221,7 +221,7 @@
         </div>
         <?php
         if ($_POST) {
-          ControladorUsuarios::ctrCrearUsuario();
+          ControladorUsuarios::ctrEditarUsuario();
         }
         ?>
       </form>

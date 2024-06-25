@@ -62,9 +62,12 @@ class ControladorUsuarios
 
 		) {
 
+			//Validar imagen
+
+			$ruta = "";
+
 			if (isset($_FILES["nuevaFoto"]["tmp_name"])) {
 
-				$ruta = "";
 
 				list($ancho, $alto) = getimagesize($_FILES["nuevaFoto"]["tmp_name"]);
 
@@ -145,10 +148,110 @@ class ControladorUsuarios
 		}
 	}
 
+	/*=============================================
+	MOSTRAR USUARIOS
+	=============================================*/
 	static public function ctrMostrarUsuarios($item, $valor)
 	{
 		$tabla = "usuarios";
 		$respuesta = ModeloUsuarios::mdlMostrarUsuarios($tabla, $item, $valor);
 		return $respuesta;
+	}
+
+
+	/*=============================================
+	EDITAR USUARIO
+	=============================================*/
+	static public function ctrEditarUsuario()
+	{
+		if (isset($_POST["editarNombre"])) {
+
+			if (
+				preg_match('/^[a-zA-Z0-9ñÑáÁéÉíÍóÓúÚ ]+$/', $_POST["editarNombre"])
+			) {
+
+				//VALIDAR IMAGEN
+				$ruta = "";
+
+				if (isset($_FILES["editarFoto"]["tmp_name"])) {
+
+					list($ancho, $alto) = getimagesize($_FILES["editarFoto"]["tmp_name"]);
+
+					$nuevoAncho = 500;
+					$nuevoAlto = 500;
+
+					$directorio = "vistas/img/usuarios/" . $_POST["editarUsuario"];
+
+					mkdir($directorio, 0755);
+
+					//IMAGEN TIPO JPEG
+
+					if ($_FILES["editarFoto"]["type"] == "image/jpeg") {
+
+						$aleatorio = mt_rand(100, 999);
+						$ruta = "vistas/img/usuarios/" . $_POST["editarUsuario"] . "/" . $aleatorio . ".jpeg";
+						$origen = imagecreatefromjpeg($_FILES["editarFoto"]["tmp_name"]);
+						$destino = imagecreatetruecolor($nuevoAncho, $nuevoAlto);
+
+						imagecopyresized($destino, $origen, 0, 0, 0, 0, $nuevoAncho, $nuevoAlto, $ancho, $alto);
+						imagejpeg($destino, $ruta);
+
+						// Libera memoria
+						imagedestroy($origen);
+						imagedestroy($destino);
+					}
+
+					//IMAGEN TIPO PNG
+
+					if ($_FILES["editarFoto"]["type"] == "image/png") {
+
+						$aleatorio = mt_rand(100, 999);
+						$ruta = "vistas/img/usuarios/" . $_POST["editarUsuario"] . "/" . $aleatorio . ".png";
+						$origen = imagecreatefrompng($_FILES["editarFoto"]["tmp_name"]);
+						$destino = imagecreatetruecolor($nuevoAncho, $nuevoAlto);
+
+						imagecopyresized($destino, $origen, 0, 0, 0, 0, $nuevoAncho, $nuevoAlto, $ancho, $alto);
+						imagepng($destino, $ruta);
+
+						// Libera memoria
+						imagedestroy($origen);
+						imagedestroy($destino);
+					}
+				}
+
+				$tabla = "usuarios";
+				$contraseña = $_POST["editarPassword"];
+				$hash = "";
+
+				if ($_POST["editarPassword"] != "") {
+					if (preg_match('/^[a-zA-Z0-9]+$/', $_POST["editarPassword"])) {
+						$hash = password_hash($contraseña, PASSWORD_BCRYPT);
+					} else {
+
+						echo '
+					<script>
+					Swal.fire("La contraseña no cumple los requisitos!");
+					</script>
+				
+				';
+					}
+				}
+
+				$datos = array(
+					"nombre" => $_POST['nombre'],
+					"usuario" => $_POST['usuario'],
+					"password" => $hash,
+					"perfil" => $_POST['perfil'],
+					"foto" => $ruta,
+				);
+			} else {
+				echo '
+					<script>
+					Swal.fire("Intentalo de nuevo!");
+					</script>
+				
+				';
+			}
+		}
 	}
 }
