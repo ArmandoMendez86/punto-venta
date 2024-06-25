@@ -180,6 +180,7 @@
           <div class="form-group">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+              <input type="hidden" class="form-control" id="idUsuario" name="idUsuario">
               <input type="text" class="form-control" id="editarNombre" name="editarNombre">
             </div>
           </div>

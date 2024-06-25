@@ -172,8 +172,12 @@ class ControladorUsuarios
 
 				//VALIDAR IMAGEN
 				$ruta = "";
+				$datos = array();
 
-				if (isset($_FILES["editarFoto"]["tmp_name"])) {
+				$datos["nombre"] = $_POST["editarNombre"];
+				$datos["usuario"] = $_POST["editarUsuario"];
+
+				if (isset($_FILES["editarFoto"]["tmp_name"]) && !empty($_FILES["editarFoto"]["tmp_name"])) {
 
 					list($ancho, $alto) = getimagesize($_FILES["editarFoto"]["tmp_name"]);
 
@@ -182,7 +186,9 @@ class ControladorUsuarios
 
 					$directorio = "vistas/img/usuarios/" . $_POST["editarUsuario"];
 
-					mkdir($directorio, 0755);
+					if (!is_dir($directorio)) {
+						mkdir($directorio, 0755);
+					}
 
 					//IMAGEN TIPO JPEG
 
@@ -199,6 +205,8 @@ class ControladorUsuarios
 						// Libera memoria
 						imagedestroy($origen);
 						imagedestroy($destino);
+
+						$datos["foto"] = $ruta;
 					}
 
 					//IMAGEN TIPO PNG
@@ -216,6 +224,8 @@ class ControladorUsuarios
 						// Libera memoria
 						imagedestroy($origen);
 						imagedestroy($destino);
+
+						$datos["foto"] = $ruta;
 					}
 				}
 
@@ -226,6 +236,7 @@ class ControladorUsuarios
 				if ($_POST["editarPassword"] != "") {
 					if (preg_match('/^[a-zA-Z0-9]+$/', $_POST["editarPassword"])) {
 						$hash = password_hash($contraseña, PASSWORD_BCRYPT);
+						$datos["password"] = $hash;
 					} else {
 
 						echo '
@@ -237,21 +248,37 @@ class ControladorUsuarios
 					}
 				}
 
-				$datos = array(
+				if ($_POST["editarPerfil"] != "") {
+					$datos["perfil"] = $_POST["editarPerfil"];
+				}
+
+				$datos["id"] = $_POST["idUsuario"];
+
+				/* $datos = array(
 					"nombre" => $_POST['nombre'],
 					"usuario" => $_POST['usuario'],
 					"password" => $hash,
 					"perfil" => $_POST['perfil'],
 					"foto" => $ruta,
-				);
-			} else {
-				echo '
-					<script>
-					Swal.fire("Intentalo de nuevo!");
-					</script>
-				
-				';
+				); */
 			}
+			$respuesta = ModeloUsuarios::mdlEditarUsuario($datos);
+
+			if ($respuesta == "ok") {
+				echo '
+				<script>
+				Swal.fire("Usuario actualizado!");
+				</script>
+			
+			';
+			}
+		} else {
+			echo '
+				<script>
+				Swal.fire("Intentalo de nuevo!");
+				</script>
+			
+			';
 		}
 	}
 }

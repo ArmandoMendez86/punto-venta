@@ -57,33 +57,33 @@ class ModeloUsuarios
 	EDITAR USUARIO
 	=============================================*/
 
-	
+
 	public static function mdlEditarUsuario($data)
 	{
-
-		$columns = array_keys($data);
-		$columns = implode(', ', $columns);
-
 		$fields = [];
 		$params = [];
 
 		foreach ($data as $key => $value) {
-			$fields[] = "{$key} = ?";
-			$params[] = $value;
+			if ($key != 'id') {
+				$fields[] = "{$key} = ?";
+				$params[] = $value;
+			}
 		}
 
-		$id = $data['id'];
-		$params[] = intval($id);
-
 		$fields = implode(', ', $fields);
+		$sql = "UPDATE usuarios SET {$fields} WHERE id = ?";
+		$params[] = $data['id'];  // Añadir el ID al final del array de parámetros
 
-		$sql = "UPDATE venta_servicio SET {$fields} WHERE id = ?";
 		$stmt = Conexion::conectar()->prepare($sql);
 
 		if ($stmt) {
-			$types = str_repeat('s', count($params) - 1) . 'i';
-			$stmt->bindParam($types, ...$params);
+			foreach ($params as $index => $param) {
+				$stmt->bindValue($index + 1, $param);
+			}
 			$stmt->execute();
+			return "ok";
+		} else {
+			return "error";
 		}
 	}
 }

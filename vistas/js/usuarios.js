@@ -35,6 +35,7 @@ $(".btnEditarUsuario").click(function () {
       $("#editarNombre").val(respuesta["nombre"]);
       $("#editarUsuario").val(respuesta["usuario"]);
       $("#editarPerfil").val(respuesta["perfil"]);
+      $("#idUsuario").val(respuesta["id"]);
 
       if (respuesta["foto"] != "") {
         $(".previsualizarImagen").attr("src", respuesta["foto"]);
