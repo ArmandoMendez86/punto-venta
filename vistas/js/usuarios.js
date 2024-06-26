@@ -34,6 +34,7 @@ $(".btnEditarUsuario").click(function () {
     success: function (respuesta) {
       $("#editarNombre").val(respuesta["nombre"]);
       $("#editarUsuario").val(respuesta["usuario"]);
+      $("#fotoActual").val(respuesta["foto"]);
       $("#editarPerfil").val(respuesta["perfil"]);
       $("#idUsuario").val(respuesta["id"]);
 
@@ -43,3 +44,34 @@ $(".btnEditarUsuario").click(function () {
     },
   });
 });
+
+/*=============================================
+	EDITAR USUARIO
+	=============================================*/
+
+  $(".btnActivar").click(function () {
+    let idUsuario = $(this).attr("idUsuario");
+    let datos = new FormData();
+    datos.append("idUsuario", idUsuario);
+  
+    $.ajax({
+      url: "ajax/usuarios.ajax.php",
+      method: "POST",
+      data: datos,
+      cache: false,
+      contentType: false,
+      processData: false,
+      dataType: "json",
+      success: function (respuesta) {
+        $("#editarNombre").val(respuesta["nombre"]);
+        $("#editarUsuario").val(respuesta["usuario"]);
+        $("#fotoActual").val(respuesta["foto"]);
+        $("#editarPerfil").val(respuesta["perfil"]);
+        $("#idUsuario").val(respuesta["id"]);
+  
+        if (respuesta["foto"] != "") {
+          $(".previsualizarImagen").attr("src", respuesta["foto"]);
+        }
+      },
+    });
+  });

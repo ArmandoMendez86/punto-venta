@@ -70,8 +70,16 @@
                 echo '<td><img src="vistas/img/usuarios/default/anonymous.png" class="img-tumnbail" width="40px"></td>';
               }
               echo '
-                <td>' . $value["perfil"] . '</td>
-                <td>' . $value["estado"] . '</td>
+                <td>' . $value["perfil"] . '</td>';
+
+              if ($value["estado"] != 0) {
+                echo '<td><button class="btn btn-success btn-xs btnActivar">Activado</button></td>';
+              } else {
+                echo '  <td><button class="btn btn-danger btn-xs btnActivar">Desactivado</button></td>';
+              }
+
+
+              echo '
                 <td>' . $value["ultimo_login"] . '</td>
                 <td>' . $value["fecha"] . '</td>
                 <td>
@@ -210,6 +218,7 @@
 
             <div class="panel">SUBIR FOTO</div>
             <input type="file" class="nuevaFoto" name="editarFoto">
+            <input type="hidden" name="fotoActual" id="fotoActual">
             <p class="help-block text-center mt-2">Peso maximo de la foto 2MB</p>
             <div class="text-center">
               <img src="vistas/img/usuarios/default/anonymous.png" class="img-thumbnail previsualizarImagen" width="150px">

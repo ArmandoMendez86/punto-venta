@@ -29,19 +29,29 @@ class ControladorUsuarios
 				// Verifica que el usuario exista y la contraseña sea correcta
 				if ($respuesta && password_verify($contraseñaIngresada, $respuesta["password"])) {
 
-					$_SESSION["iniciarSesion"] = "ok";
-					$_SESSION["nombre"] = $respuesta["nombre"];
-					$_SESSION["usuario"] = $respuesta["usuario"];
-					$_SESSION["foto"] = $respuesta["foto"];
+					if ($respuesta["estado"] == 1) {
+						$_SESSION["iniciarSesion"] = "ok";
+						$_SESSION["nombre"] = $respuesta["nombre"];
+						$_SESSION["usuario"] = $respuesta["usuario"];
+						$_SESSION["foto"] = $respuesta["foto"];
 
-					echo '<br><div class="alert alert-success">Bienvenido ' . $respuesta["nombre"] . '</div>';
+						echo '<br><div class="alert alert-success">Bienvenido ' . $respuesta["nombre"] . '</div>';
 
-					echo '	<script>
-							setInterval(() => {
-								window.location = "inicio";
-							}, 1500);
-    						</script>
-							';
+						echo '	<script>
+								setInterval(() => {
+									window.location = "inicio";
+								}, 1500);
+								</script>
+								';
+					} else {
+						echo '<br><div class="alert alert-danger">Cuenta inactiva</div>';
+						echo '	<script>
+								setInterval(() => {
+									window.location = "inicio";
+								}, 1500);
+								</script>
+								';
+					}
 				} else {
 					echo '<br><div class="alert alert-danger">Error al ingresar, vuelve a intentarlo</div>';
 				}
@@ -164,13 +174,11 @@ class ControladorUsuarios
 	=============================================*/
 	static public function ctrEditarUsuario()
 	{
-		if (isset($_POST["editarNombre"])) {
+		if (isset($_POST["editarNombre"]) && !empty($_POST["editarNombre"])) {
 
-			if (
-				preg_match('/^[a-zA-Z0-9ñÑáÁéÉíÍóÓúÚ ]+$/', $_POST["editarNombre"])
-			) {
+			if (preg_match('/^[a-zA-Z0-9ñÑáÁéÉíÍóÓúÚ ]+$/', $_POST["editarNombre"])) {
 
-				//VALIDAR IMAGEN
+				// VALIDAR IMAGEN
 				$ruta = "";
 				$datos = array();
 
@@ -186,14 +194,16 @@ class ControladorUsuarios
 
 					$directorio = "vistas/img/usuarios/" . $_POST["editarUsuario"];
 
+					if (!empty($_POST["fotoActual"])) {
+						unlink($_POST["fotoActual"]);
+					}
+
 					if (!is_dir($directorio)) {
 						mkdir($directorio, 0755);
 					}
 
-					//IMAGEN TIPO JPEG
-
+					// IMAGEN TIPO JPEG
 					if ($_FILES["editarFoto"]["type"] == "image/jpeg") {
-
 						$aleatorio = mt_rand(100, 999);
 						$ruta = "vistas/img/usuarios/" . $_POST["editarUsuario"] . "/" . $aleatorio . ".jpeg";
 						$origen = imagecreatefromjpeg($_FILES["editarFoto"]["tmp_name"]);
@@ -209,10 +219,8 @@ class ControladorUsuarios
 						$datos["foto"] = $ruta;
 					}
 
-					//IMAGEN TIPO PNG
-
+					// IMAGEN TIPO PNG
 					if ($_FILES["editarFoto"]["type"] == "image/png") {
-
 						$aleatorio = mt_rand(100, 999);
 						$ruta = "vistas/img/usuarios/" . $_POST["editarUsuario"] . "/" . $aleatorio . ".png";
 						$origen = imagecreatefrompng($_FILES["editarFoto"]["tmp_name"]);
@@ -229,7 +237,10 @@ class ControladorUsuarios
 					}
 				}
 
-				$tabla = "usuarios";
+				if ($_POST["editarPerfil"] != "") {
+					$datos["perfil"] = $_POST["editarPerfil"];
+				}
+
 				$contraseña = $_POST["editarPassword"];
 				$hash = "";
 
@@ -238,46 +249,62 @@ class ControladorUsuarios
 						$hash = password_hash($contraseña, PASSWORD_BCRYPT);
 						$datos["password"] = $hash;
 					} else {
-
 						echo '
-					<script>
-					Swal.fire("La contraseña no cumple los requisitos!");
-					</script>
-				
-				';
+							<script>
+							Swal.fire("La contraseña no cumple los requisitos!");
+							</script>
+						';
+						// Return para salir del método si la contraseña no es válida
+						return;
 					}
-				}
-
-				if ($_POST["editarPerfil"] != "") {
-					$datos["perfil"] = $_POST["editarPerfil"];
 				}
 
 				$datos["id"] = $_POST["idUsuario"];
 
-				/* $datos = array(
-					"nombre" => $_POST['nombre'],
-					"usuario" => $_POST['usuario'],
-					"password" => $hash,
-					"perfil" => $_POST['perfil'],
-					"foto" => $ruta,
-				); */
-			}
-			$respuesta = ModeloUsuarios::mdlEditarUsuario($datos);
+				$respuesta = ModeloUsuarios::mdlEditarUsuario($datos);
 
-			if ($respuesta == "ok") {
+				if ($respuesta == "ok") {
+					echo '
+						<script>
+						Swal.fire({
+							position: "top-end",
+							icon: "success",
+							title: "Usuario modificado",
+							showConfirmButton: false,
+							timer: 1500
+						  });
+						  setTimeout(()=>{
+							window.location = "usuarios";
+						}, 1500)
+						</script>
+					';
+				}
+			} else {
 				echo '
-				<script>
-				Swal.fire("Usuario actualizado!");
-				</script>
-			
-			';
+					<script>
+					Swal.fire({
+						icon: "error",
+						title: "Oops...",
+						text: "Los campos no pueden contener caracteres especiales!",
+					});
+					setTimeout(()=>{
+						window.location = "usuarios";
+					}, 1500)
+					</script>
+				';
 			}
 		} else {
 			echo '
 				<script>
-				Swal.fire("Intentalo de nuevo!");
+				Swal.fire({
+					icon: "error",
+					title: "Oops...",
+					text: "Los campos no pueden contener caracteres especiales o estar vacíos!",
+				});
+				setTimeout(()=>{
+					window.location = "usuarios";
+				}, 1500)
 				</script>
-			
 			';
 		}
 	}
