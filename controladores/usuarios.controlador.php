@@ -45,12 +45,7 @@ class ControladorUsuarios
 								';
 					} else {
 						echo '<br><div class="alert alert-danger">Cuenta inactiva</div>';
-						echo '	<script>
-								setInterval(() => {
-									window.location = "inicio";
-								}, 1500);
-								</script>
-								';
+						
 					}
 				} else {
 					echo '<br><div class="alert alert-danger">Error al ingresar, vuelve a intentarlo</div>';
