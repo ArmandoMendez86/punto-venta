@@ -9,6 +9,7 @@ class AjaxUsuarios
     public $idUsuario;
     public $activarIdUsuario;
     public $cambiarEstado;
+    public $validarUsuario;
 
     public function ajaxEditarUsuario()
     {
@@ -18,7 +19,7 @@ class AjaxUsuarios
         echo json_encode($respuesta);
     }
 
-    //Activar usuario
+
     public function ajaxActivarUsuario()
     {
         $tabla = "usuarios";
@@ -30,18 +31,38 @@ class AjaxUsuarios
         $respuesta = ModeloUsuarios::mdlActivarUsuario($tabla, $item1, $valor1, $item2, $valor2);
         echo json_encode($respuesta);
     }
+
+    public function ajaxValidarUsuario()
+    {
+        $item = "usuario";
+        $valor = $this->validarUsuario;
+        $respuesta = ControladorUsuarios::ctrMostrarUsuarios($item, $valor);
+        echo json_encode($respuesta);
+    }
 }
 
-//Usuario a editar
+/*=============================================
+	USUARIO A EDITAR
+	=============================================*/
 if (isset($_POST["idUsuario"])) {
     $editar = new AjaxUsuarios();
     $editar->idUsuario = $_POST["idUsuario"];
     $editar->ajaxEditarUsuario();
 }
-//Activar usuario
+/*=============================================
+	ACTIVAR USUARIO
+	=============================================*/
 if (isset($_POST["estado"])) {
     $activarUsuario = new AjaxUsuarios();
     $activarUsuario->cambiarEstado = $_POST["estado"];
     $activarUsuario->activarIdUsuario = $_POST["activarIdUsuario"];
     $activarUsuario->ajaxActivarUsuario();
 }
+/*=============================================
+	VALIDAR NO REPETIR USUARIO
+	=============================================*/
+    if (isset($_POST["validarUsuario"])) {
+        $validarUsuario = new AjaxUsuarios();
+        $validarUsuario->validarUsuario = $_POST["validarUsuario"];
+        $validarUsuario->ajaxValidarUsuario();
+    }

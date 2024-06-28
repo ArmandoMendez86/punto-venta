@@ -35,17 +35,32 @@ class ControladorUsuarios
 						$_SESSION["usuario"] = $respuesta["usuario"];
 						$_SESSION["foto"] = $respuesta["foto"];
 
-						echo '<br><div class="alert alert-success">Bienvenido ' . $respuesta["nombre"] . '</div>';
 
-						echo '	<script>
-								setInterval(() => {
-									window.location = "inicio";
-								}, 1500);
-								</script>
-								';
+						date_default_timezone_set("America/Mexico_City");
+						$fecha = date("Y-m-d");
+						$hora = date("H:i:s");
+
+						$fechaActual = $fecha . " " . $hora;
+
+						$item1 = "ultimo_login";
+						$valor1 = $fechaActual;
+						$item2 = "id";
+						$valor2 = $respuesta["id"];
+
+						$registrarUltimoLogin = ModeloUsuarios::mdlActivarUsuario($tabla, $item1, $valor1, $item2, $valor2);
+
+						if ($registrarUltimoLogin == "ok") {
+							echo '<br><div class="alert alert-success">Bienvenido ' . $respuesta["nombre"] . '</div>';
+
+							echo '	<script>
+									setInterval(() => {
+										window.location = "inicio";
+									}, 1500);
+									</script>
+									';
+						}
 					} else {
 						echo '<br><div class="alert alert-danger">Cuenta inactiva</div>';
-						
 					}
 				} else {
 					echo '<br><div class="alert alert-danger">Error al ingresar, vuelve a intentarlo</div>';

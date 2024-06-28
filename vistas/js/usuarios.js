@@ -83,3 +83,67 @@ $(".btnActivar").click(function (e) {
     },
   });
 });
+
+/*=============================================
+	VALIDANDO USUARIO
+	=============================================*/
+
+$("#usuario").change(function () {
+  $(".alert").remove();
+  let usuario = $(this).val();
+  let datos = new FormData();
+  datos.append("validarUsuario", usuario);
+
+  $.ajax({
+    url: "ajax/usuarios.ajax.php",
+    method: "POST",
+    data: datos,
+    cache: false,
+    contentType: false,
+    processData: false,
+    dataType: "json",
+    success: function (respuesta) {
+      if (respuesta) {
+        $("#usuario")
+          .parent()
+          .after(
+            "<div class='alert alert-warning'>Ya existe este usuario, intenta con otro!</div>"
+          );
+        $("#usuario").val("");
+      }
+    },
+  });
+});
+
+/*=============================================
+	ELIMINAR USUARIO
+	=============================================*/
+
+$(".btnEliminarUsuario").click(function () {
+  let idUsuario = $(this).attr("idUsuario");
+  let fotoUsuario = $(this).attr("fotoUsuario");
+  Swal.fire({
+    title: "Esta seguro de borrar el usuario?",
+    text: "Puede cancelar la acción, sino esta seguro!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Si, eliminar",
+    cancelButtonText: "Cancelar",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.fire({
+        title: "Eliminado!",
+        text: "Usuario eliminado.",
+        icon: "success",
+      });
+
+      window.location =
+        "index.php?ruta=usuarios&idUsuario=" +
+        idUsuario +
+        "&fotoUsuario=" +
+        fotoUsuario;
+    }
+  });
+});

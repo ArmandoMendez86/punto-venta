@@ -42,7 +42,6 @@
               <th>Perfil</th>
               <th>Estado</th>
               <th>Ultimo login</th>
-              <th>Fecha</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -81,13 +80,12 @@
 
               echo '
                 <td>' . $value["ultimo_login"] . '</td>
-                <td>' . $value["fecha"] . '</td>
                 <td>
                   <div class="text-center">
                     <button class="btn btn-warning btnEditarUsuario" idUsuario="' . $value["id"] . '" data-toggle="modal" data-target="#modalEditarUsuario">
                       <i class="fa fa-pencil"></i>
                     </button>
-                    <button class="btn btn-danger">
+                    <button class="btn btn-danger btnEliminarUsuario" idUsuario="' . $value["id"] . '" fotoUsuario="' . $value["foto"] . '">
                       <i class="fa fa-times"></i>
                     </button>
                   </div>
@@ -129,7 +127,7 @@
           <div class="form-group">
             <div class="input-group">
               <span class="input-group-addon"><i class="glyphicon glyphicon-sunglasses"></i></span>
-              <input type="text" class="form-control" name="usuario" placeholder="Ingresar usuario">
+              <input type="text" class="form-control" name="usuario" id="usuario" placeholder="Ingresar usuario">
             </div>
           </div>
           <div class="form-group">
