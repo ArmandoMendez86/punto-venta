@@ -122,6 +122,7 @@ $("#usuario").change(function () {
 $(".btnEliminarUsuario").click(function () {
   let idUsuario = $(this).attr("idUsuario");
   let fotoUsuario = $(this).attr("fotoUsuario");
+  let usuario = $(this).attr("usuario");
   Swal.fire({
     title: "Esta seguro de borrar el usuario?",
     text: "Puede cancelar la acción, sino esta seguro!",
@@ -133,15 +134,11 @@ $(".btnEliminarUsuario").click(function () {
     cancelButtonText: "Cancelar",
   }).then((result) => {
     if (result.isConfirmed) {
-      Swal.fire({
-        title: "Eliminado!",
-        text: "Usuario eliminado.",
-        icon: "success",
-      });
-
       window.location =
         "index.php?ruta=usuarios&idUsuario=" +
         idUsuario +
+        "&usuario=" +
+        usuario +
         "&fotoUsuario=" +
         fotoUsuario;
     }
