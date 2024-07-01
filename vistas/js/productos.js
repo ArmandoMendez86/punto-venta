@@ -1,10 +1,6 @@
 /*=============================================
 	CARGANDO LA TABLA DINAMICA DE PRODUCTOS
 	=============================================*/
-
-$.ajax({
-  url: "ajax/datatable_productos.ajax.php",
-  success: function (respuesta) {
-    console.log(respuesta);
-  },
+$('.tablaProductos').DataTable({
+  "ajax": "ajax/datatable_productos.ajax.php",
 });

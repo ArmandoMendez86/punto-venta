@@ -32,7 +32,7 @@
       </div>
 
       <div class="box-body">
-        <table class="table table-bordered table-striped dt-responsive tablas display" style="width:100%">
+        <table class="table table-bordered table-striped dt-responsive display  tablaProductos" style="width:100%">
           <thead>
             <tr>
               <th>#</th>
@@ -48,51 +48,7 @@
               <th>Acciones</th>
             </tr>
           </thead>
-
-          <tbody>
-
-            <?php
-
-            $item = null;
-            $valor = null;
-            $productos = ControladorProductos::ctrMostrarProductos($item, $valor);
-
-            foreach ($productos as $key => $value) {
-
-              echo '
-              <tr>
-              <td>' . ($key + 1) . '</td>
-              <td>' . $value["imagen"] . '</td>
-              <td>' . $value["codigo"] . '</td>
-              <td>' . $value["descripcion"] . '</td>';
-
-              $item = "id";
-              $valor = $value["id_categoria"];
-              $categoria = ControladorCategorias::ctrMostrarCategorias($item, $valor);
-
-              echo '
-              <td>' . $categoria["categoria"] . '</td>
-              <td>' . $value["stock"] . '</td>
-              <td>' . $value["precio_compra"] . '</td>
-              <td>' . $value["precio_venta"] . '</td>
-              <td>' . $value["ventas"] . '</td>
-              <td>' . $value["fecha"] . '</td>
-              <td>
-              <div class="text-center">
-                <button class="btn btn-warning btnEditarProducto" data-toggle="modal" data-target="#modalEditarProducto">
-                  <i class="fa fa-pencil"></i>
-                </button>
-                <button class="btn btn-danger btnEliminarProducto">
-                  <i class="fa fa-times"></i>
-                </button>
-              </div>
-            </td>
-            </tr>
-              ';
-            }
-
-            ?>
-          </tbody>
+          <tbody></tbody>
         </table>
       </div>
     </div>
