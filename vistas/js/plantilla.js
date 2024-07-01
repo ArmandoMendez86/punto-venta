@@ -4,7 +4,9 @@ SideBar Menu
 
 $(".sidebar-menu").tree();
 
-//Datatables
+/*=============================================
+Datatable
+=============================================*/
 $(".tablas").DataTable({
   language: {
     url: "vistas/js/mx.json",

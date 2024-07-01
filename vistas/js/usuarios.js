@@ -18,7 +18,7 @@ $(".nuevaFoto").change(function () {
 	EDITAR USUARIO
 	=============================================*/
 
-$(".btnEditarUsuario").click(function () {
+$(document).on("click", ".btnEditarUsuario", function () {
   let idUsuario = $(this).attr("idUsuario");
   let datos = new FormData();
   datos.append("idUsuario", idUsuario);
@@ -46,10 +46,10 @@ $(".btnEditarUsuario").click(function () {
 });
 
 /*=============================================
-	EDITAR USUARIO
+	ACTIVAR USUARIO
 	=============================================*/
 
-$(".btnActivar").click(function (e) {
+$(document).on("click", ".btnActivar", function (e) {
   let boton = e.target;
   let idUsuario = $(boton).attr("idUsuario");
   let estado = $(boton).attr("estado");
@@ -79,7 +79,9 @@ $(".btnActivar").click(function (e) {
     processData: false,
     dataType: "json",
     success: function (respuesta) {
-      console.log(respuesta);
+      //Buscar solucion para no recargar la pagina en resolucion
+      //de celulares
+      window.location = "usuarios";
     },
   });
 });
@@ -119,7 +121,7 @@ $("#usuario").change(function () {
 	ELIMINAR USUARIO
 	=============================================*/
 
-$(".btnEliminarUsuario").click(function () {
+$(document).on("click", ".btnEliminarUsuario", function () {
   let idUsuario = $(this).attr("idUsuario");
   let fotoUsuario = $(this).attr("fotoUsuario");
   let usuario = $(this).attr("usuario");

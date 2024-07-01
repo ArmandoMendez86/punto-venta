@@ -6,7 +6,6 @@ class ControladorUsuarios
 	/*=============================================
 	INGRESO DE USUARIO
 	=============================================*/
-
 	public function ctrIngresoUsuario()
 	{
 
@@ -72,99 +71,100 @@ class ControladorUsuarios
 	/*=============================================
 	CREAR USUARIO
 	=============================================*/
-
 	static public function ctrCrearUsuario()
 	{
-		if (
-			preg_match('/^[a-zA-Z0-9ñÑáÁéÉíÍóÓúÚ ]+$/', $_POST["nombre"]) &&
-			preg_match('/^[a-zA-Z0-9]+$/', $_POST["usuario"]) &&
-			preg_match('/^[a-zA-Z0-9]+$/', $_POST["password"])
+		if ($_POST["usuario"]) {
 
-		) {
+			if (
+				preg_match('/^[a-zA-Z0-9ñÑáÁéÉíÍóÓúÚ ]+$/', $_POST["nombre"]) &&
+				preg_match('/^[a-zA-Z0-9]+$/', $_POST["usuario"]) &&
+				preg_match('/^[a-zA-Z0-9]+$/', $_POST["password"])
 
-			//Validar imagen
+			) {
 
-			$ruta = "";
+				//Validar imagen
 
-			if (isset($_FILES["nuevaFoto"]["tmp_name"])) {
+				$ruta = "";
+
+				if (isset($_FILES["nuevaFoto"]["tmp_name"])) {
 
 
-				list($ancho, $alto) = getimagesize($_FILES["nuevaFoto"]["tmp_name"]);
+					list($ancho, $alto) = getimagesize($_FILES["nuevaFoto"]["tmp_name"]);
 
-				$nuevoAncho = 500;
-				$nuevoAlto = 500;
+					$nuevoAncho = 500;
+					$nuevoAlto = 500;
 
-				$directorio = "vistas/img/usuarios/" . $_POST["usuario"];
-				mkdir($directorio, 0755);
+					$directorio = "vistas/img/usuarios/" . $_POST["usuario"];
+					mkdir($directorio, 0755);
 
-				//imagen tipo jpeg
+					//imagen tipo jpeg
 
-				if ($_FILES["nuevaFoto"]["type"] == "image/jpeg") {
+					if ($_FILES["nuevaFoto"]["type"] == "image/jpeg") {
 
-					$aleatorio = mt_rand(100, 999);
-					$ruta = "vistas/img/usuarios/" . $_POST["usuario"] . "/" . $aleatorio . ".jpeg";
-					$origen = imagecreatefromjpeg($_FILES["nuevaFoto"]["tmp_name"]);
-					$destino = imagecreatetruecolor($nuevoAncho, $nuevoAlto);
+						$aleatorio = mt_rand(100, 999);
+						$ruta = "vistas/img/usuarios/" . $_POST["usuario"] . "/" . $aleatorio . ".jpeg";
+						$origen = imagecreatefromjpeg($_FILES["nuevaFoto"]["tmp_name"]);
+						$destino = imagecreatetruecolor($nuevoAncho, $nuevoAlto);
 
-					imagecopyresized($destino, $origen, 0, 0, 0, 0, $nuevoAncho, $nuevoAlto, $ancho, $alto);
-					imagejpeg($destino, $ruta);
+						imagecopyresized($destino, $origen, 0, 0, 0, 0, $nuevoAncho, $nuevoAlto, $ancho, $alto);
+						imagejpeg($destino, $ruta);
 
-					// Libera memoria
-					imagedestroy($origen);
-					imagedestroy($destino);
+						// Libera memoria
+						imagedestroy($origen);
+						imagedestroy($destino);
+					}
+					//imagen tipo png
+
+					if ($_FILES["nuevaFoto"]["type"] == "image/png") {
+
+						$aleatorio = mt_rand(100, 999);
+						$ruta = "vistas/img/usuarios/" . $_POST["usuario"] . "/" . $aleatorio . ".png";
+						$origen = imagecreatefrompng($_FILES["nuevaFoto"]["tmp_name"]);
+						$destino = imagecreatetruecolor($nuevoAncho, $nuevoAlto);
+
+						imagecopyresized($destino, $origen, 0, 0, 0, 0, $nuevoAncho, $nuevoAlto, $ancho, $alto);
+						imagepng($destino, $ruta);
+
+						// Libera memoria
+						imagedestroy($origen);
+						imagedestroy($destino);
+					}
 				}
-				//imagen tipo png
 
-				if ($_FILES["nuevaFoto"]["type"] == "image/png") {
+				$tabla = 'usuarios';
 
-					$aleatorio = mt_rand(100, 999);
-					$ruta = "vistas/img/usuarios/" . $_POST["usuario"] . "/" . $aleatorio . ".png";
-					$origen = imagecreatefrompng($_FILES["nuevaFoto"]["tmp_name"]);
-					$destino = imagecreatetruecolor($nuevoAncho, $nuevoAlto);
+				// Paso 1: Recibir la contraseña del usuario
+				$contraseña = $_POST["password"];
 
-					imagecopyresized($destino, $origen, 0, 0, 0, 0, $nuevoAncho, $nuevoAlto, $ancho, $alto);
-					imagepng($destino, $ruta);
+				// Paso 2: Encriptar la contraseña usando password_hash
+				$hash = password_hash($contraseña, PASSWORD_BCRYPT);
 
-					// Libera memoria
-					imagedestroy($origen);
-					imagedestroy($destino);
+
+				$datos = array(
+					"nombre" => $_POST['nombre'],
+					"usuario" => $_POST['usuario'],
+					"password" => $hash,
+					"perfil" => $_POST['perfil'],
+					"foto" => $ruta,
+				);
+
+				$respuesta = ModeloUsuarios::mdlIngresarUsuario($tabla, $datos);
+
+				if ($respuesta == 'ok') {
+					echo '
+					<script>
+					window.location = "usuarios";
+					</script>
+				
+				';
 				}
-			}
-
-			$tabla = 'usuarios';
-
-			// Paso 1: Recibir la contraseña del usuario
-			$contraseña = $_POST["password"];
-
-			// Paso 2: Encriptar la contraseña usando password_hash
-			$hash = password_hash($contraseña, PASSWORD_BCRYPT);
-
-
-			$datos = array(
-				"nombre" => $_POST['nombre'],
-				"usuario" => $_POST['usuario'],
-				"password" => $hash,
-				"perfil" => $_POST['perfil'],
-				"foto" => $ruta,
-			);
-
-			$respuesta = ModeloUsuarios::mdlIngresarUsuario($tabla, $datos);
-
-			if ($respuesta == 'ok') {
+			} else {
 				echo '
-				<script>
-				Swal.fire("Usuario agregado!");
-				</script>
-			
-			';
+					<script>
+					window.location = "usuarios";
+					</script>
+				';
 			}
-		} else {
-			echo '
-				<script>
-				Swal.fire("Intentalo de nuevo!");
-				</script>
-			
-			';
 		}
 	}
 
@@ -177,7 +177,6 @@ class ControladorUsuarios
 		$respuesta = ModeloUsuarios::mdlMostrarUsuarios($tabla, $item, $valor);
 		return $respuesta;
 	}
-
 
 	/*=============================================
 	EDITAR USUARIO
@@ -276,16 +275,7 @@ class ControladorUsuarios
 				if ($respuesta == "ok") {
 					echo '
 						<script>
-						Swal.fire({
-							position: "top-end",
-							icon: "success",
-							title: "Usuario modificado",
-							showConfirmButton: false,
-							timer: 1500
-						  });
-						  setTimeout(()=>{
-							window.location = "usuarios";
-						}, 1500)
+						window.location = "usuarios";
 						</script>
 					';
 				}
@@ -303,22 +293,12 @@ class ControladorUsuarios
 					</script>
 				';
 			}
-		} else {
-			echo '
-				<script>
-				Swal.fire({
-					icon: "error",
-					title: "Oops...",
-					text: "Los campos no pueden contener caracteres especiales o estar vacíos!",
-				});
-				setTimeout(()=>{
-					window.location = "usuarios";
-				}, 1500)
-				</script>
-			';
 		}
 	}
 
+	/*=============================================
+	BORRAR USUARIO
+	=============================================*/
 	static public function ctrBorrarUsuario()
 	{
 		if (isset($_GET["idUsuario"])) {
@@ -334,16 +314,7 @@ class ControladorUsuarios
 			if ($respuesta == "ok") {
 				echo '
 					<script>
-					Swal.fire({
-						position: "top-end",
-						icon: "success",
-						title: "Usuario eliminado",
-						showConfirmButton: false,
-						timer: 1500,
-					  });
-					setTimeout(()=>{
 						window.location = "usuarios";
-					}, 1500)
 					</script>
 				';
 			}
